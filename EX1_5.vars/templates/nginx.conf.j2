@@ -1,0 +1,20 @@
+daemon            off;
+worker_processes  2;
+
+events {
+    use           epoll;
+    worker_connections  128;
+}
+
+http {
+    server_tokens off;
+    include       mime.types;
+    charset       utf-8;
+
+    server {
+        location / {
+            root {{ root_dir }};
+            index index.html;
+        }
+    }
+}
