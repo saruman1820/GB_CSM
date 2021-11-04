@@ -1,0 +1,27 @@
+---
+
+- name: Confure nginx
+  block:
+    - name: update nginx config
+      template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+        owner: nginx
+      notify:
+        - reload nginx
+      become: yes
+
+    - name: do not permit traffic in default zone on port 80/tcp
+      command: firewall-cmd --zone=dmz --permanent --add-service=http --add-service=https
+
+    - name: Bounce firewalld
+      service: name=firewalld state=restarted
+
+    - name: update nginx statics
+      copy:
+        src: "files/"
+        dest: "{{ root_dir }}"
+        owner: nginx
+      notify:
+        - reload nginx
+      become: yes

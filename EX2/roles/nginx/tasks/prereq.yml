@@ -1,0 +1,43 @@
+---
+
+- name: Prepare step for nginx
+  block:
+    - name: Find out if it is baremetal or vm
+      command: "systemd-detect-virt"
+      register: virt
+      ignore_errors: true
+
+    - name: Mount up device
+      parted:
+        device: /dev/sdb
+        number: 1
+        flags: [ lvm ]
+        state: present
+      become: yes
+      when: virt.stdout != "lxc"
+
+    - name: create filesystem
+      filesystem:
+        fstype: xfs
+        dev: /dev/sdb1
+      become: yes
+      when: virt.stdout != "lxc"
+
+    - name: Mount up device by label
+      mount:
+        path: /data
+        src: /dev/sdb1
+        fstype: xfs
+        state: mounted
+      become: yes
+      when: virt.stdout != "lxc"
+
+    - name: create directory for nginx files
+      file:
+        path: "{{ root_dir }}"
+        state: directory
+        mode: 0755
+        owner: root
+        group: root
+      become: yes
+
