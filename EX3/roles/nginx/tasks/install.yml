@@ -1,0 +1,14 @@
+---
+
+- name: Install nginx packages
+  block:
+    - name: Install EPEL repo
+      yum:
+        name: epel-release
+        state: present
+
+    - name: install nginx server
+      yum:
+        name: nginx
+        state: present
+        update_cache: yes
