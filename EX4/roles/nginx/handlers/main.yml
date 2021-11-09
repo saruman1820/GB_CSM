@@ -1,0 +1,13 @@
+---
+- name: (Handler) Systemd daemon-reload
+  systemd:
+    daemon_reload: true
+
+- name: reload nginx
+  service:
+    name: nginx
+    state: reloaded
+    daemon_reload: yes
+    enabled: yes
+  become: yes
+

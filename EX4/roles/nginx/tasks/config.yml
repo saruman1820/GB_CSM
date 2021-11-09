@@ -1,0 +1,37 @@
+---
+
+- name: Configure nginx
+  block:
+    - name: Find out if it is baremetal or vm
+      command: "systemd-detect-virt"
+      register: virt
+      ignore_errors: true
+
+    - name: selinux disable permanently
+      selinux:
+        policy: targeted
+        state: permissive
+      when: virt.stdout != "lxc"
+
+    - name: set in permissive without reboot
+      command: setenforce 0
+      ignore_errors: true
+      changed_when: false
+      when: virt.stdout != "lxc"
+
+    - name: update nginx config
+      template:
+        src: nginx.conf.j2
+        dest: /etc/nginx/nginx.conf
+        owner: root
+      notify:
+        - reload nginx
+
+    - name: update nginx statics
+      copy:
+        src: "static/"
+        dest: "{{ root_dir }}"
+        owner: root
+      notify:
+        - reload nginx
+

@@ -1,0 +1,9 @@
+---
+
+- hosts: webservers
+  roles:
+    - nginx
+
+- hosts: db
+  roles:
+    - geerlingguy.mysql
