@@ -37,8 +37,17 @@
         owner: root
         group: root
 
-    - name: do not permit traffic in default zone on port 80/tcp
-      command: firewall-cmd --zone=dmz --permanent --add-service=http
+    - name: do not permit traffic in default zone on port 8081/tcp
+      ansible.posix.firewalld:
+        zone: public
+        port: 80/tcp
+        permanent: yes
+        state: enabled
 
-    - name: reload FW
-      command: firewall-cmd --reload
+
+
+#    - name: do not permit traffic in default zone on port 80/tcp
+#      command: firewall-cmd --zone=public --permanent --add-service=http
+#
+#    - name: reload FW
+#      command: firewall-cmd --reload
