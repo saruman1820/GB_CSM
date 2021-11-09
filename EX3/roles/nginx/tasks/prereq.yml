@@ -37,7 +37,7 @@
         owner: root
         group: root
 
-    - name: do not permit traffic in default zone on port 8081/tcp
+    - name: do  permit traffic in public zone on port 80/tcp
       ansible.posix.firewalld:
         zone: public
         port: 80/tcp
